@@ -1,11 +1,9 @@
 import tkinter as tk
 import tkinter.messagebox as tkm
+import math
 def kaijyou(x):
-    a = 1
-    for i in range(1, x+1):
-        a = a*i
-    print(a)
-    return a
+    
+    return math.factorial(x)
 
 
 def button_click(event):
