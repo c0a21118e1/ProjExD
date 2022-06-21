@@ -23,7 +23,7 @@ def button_click(event):
         print(eqn1)
         entry.delete(0, tk.END)
         entry.insert(tk.END,kaijyou(int(eqn1)))
-        
+    
 
         
 
@@ -53,8 +53,9 @@ if __name__ == "__main__":
     btn = tk.Button(root,text="x!",width=4, height=2,font=("Times New Roman", 30) )
     btn.bind("<1>", button_click)
     btn.grid(row=1,column=4)
-    
-
+    btn = tk.Button(root,text="/",width=4, height=2,font=("Times New Roman", 30))
+    btn.bind("<1>", button_click)
+    btn.grid(row=2,column=4)
 
 
     root.mainloop()
