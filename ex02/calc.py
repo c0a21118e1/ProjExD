@@ -1,18 +1,36 @@
 import tkinter as tk
 import tkinter.messagebox as tkm
+def kaijyou(x):
+    a = 1
+    for i in range(1, x+1):
+        a = a*i
+    print(a)
+    return a
+
+
 def button_click(event):
     btn = event.widget
     num = btn["text"]
+    print(num)
     if num == "=":
          eqn = entry.get()
          res = eval(eqn)
          entry.delete(0, tk.END)
          entry.insert(tk.END,res)
+         print(res)
+    if num == "x!":
+        eqn1 = entry.get()
+        print(eqn1)
+        entry.delete(0, tk.END)
+        entry.insert(tk.END,kaijyou(int(eqn1)))
+        
+
+        
 
 
-
-    else:
+    if num != "=" and num != "x!":
         entry.insert(tk.END, num)
+        print(num)
         #tkm.showinfo("", f"{num}のボタンがクリックされました")
 if __name__ == "__main__":
 
@@ -32,6 +50,10 @@ if __name__ == "__main__":
         if (i+1)%3 == 0:
             r += 1
             c = 0
+    btn = tk.Button(root,text="x!",width=4, height=2,font=("Times New Roman", 30) )
+    btn.bind("<1>", button_click)
+    btn.grid(row=1,column=4)
+    
 
 
 
