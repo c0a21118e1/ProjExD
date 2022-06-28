@@ -1,6 +1,6 @@
 import tkinter as tk
 import tkinter.messagebox as tkm
-
+import maze_maker
 
 def key_down(event):
     global key
