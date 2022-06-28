@@ -12,6 +12,7 @@ def key_up(event):
     global key
     key = ""
 
+
 def main_proc():
     global key, cx, cy, mx, my
     if maze_bg[my-1][mx] == 0:
