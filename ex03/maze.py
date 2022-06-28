@@ -36,7 +36,7 @@ def main_proc():
     
     
     if mx == 13 and my == 7:
-        canvas.create_text(500,500, text="おめでとう", font = ("HG丸ゴシックM-PRO",80))
+        canvas.create_text(500,500, text="おめでとう", font = ("HG丸ゴシックM-PRO",80),fill ="red")
     root.after(100, main_proc)
 
 
