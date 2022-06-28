@@ -35,6 +35,7 @@ if __name__ == "__main__":
     canvas = tk.Canvas(root, width = 1500, height = 900, bg = "black")
     maze_bg = mm.make_maze(15, 9)
     print(maze_bg)
+    mm.show_maze(canvas, maze_bg)
     canvas.pack()
     tori = tk.PhotoImage(file="ex03/fig/5.png")
     cx, cy = 300, 400
@@ -43,6 +44,7 @@ if __name__ == "__main__":
     root.bind("<KeyRelease>", key_up)
     canvas.create_image(cx, cy, image=tori, tag="tori")
     main_proc()
+    
     
     canvas.mainloop()
 
