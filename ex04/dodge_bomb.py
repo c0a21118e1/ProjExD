@@ -90,7 +90,7 @@ def main():
 
             pg.display.update()
             clock.tick(1000)
-            tkm.showwarning("警告", "こうかとんは爆発しました")
+            tkm.showwarning("警告", "こうかとんは安らかに眠りました")
             
             return
         pg.display.update()
