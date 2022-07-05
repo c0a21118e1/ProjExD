@@ -1,8 +1,14 @@
+from cmath import e
+from re import X
 import pygame as pg
 import sys
 import random
+import tkinter as tk
+import tkinter.messagebox as tkm
 def main():
     # 練習１
+    root = tk.Tk()
+    root.geometry("1x1")
     clock = pg.time.Clock()
     pg.display.set_caption("逃げろ！こうかとん")
     screen_sfc = pg.display.set_mode((1600, 900)) # Suface
@@ -56,10 +62,37 @@ def main():
 
         # 練習7
         yoko, tate = check_bound(bmimg_rct, screen_rct)
+
         vx *= yoko
         vy *= tate
+        
+        
+        if pg.time.get_ticks() % 1000 == 0:
+            if vx < 0:
+                vx -= 1
+            else:
+                vx += 1
+            if vy < 0:
+                vy -= 1
+            else:
+                vy += 1
+            pg.draw.circle(bmimg_sfc, (random.randint(1, 255), random.randint(1, 255), random.randint(1, 255)), (10, 10), 10)
+        if kkimg_rct.colliderect(bmimg_rct):
+            
+            kkimg_sfc = pg.image.load("fig/11.png")
+            kkimg_rct = kkimg_sfc.get_rect()
+            #kkimg_sfc = pg.transform.rotozoom(kkimg_sfc, 0, )
+            kkimg_rct.center = kkimg_rct.centerx, kkimg_rct.centery
 
-        if kkimg_rct.colliderect(bmimg_rct): return
+            screen_sfc.blit(kkimg_sfc, kkimg_rct)
+            
+
+
+            pg.display.update()
+            clock.tick(1000)
+            tkm.showwarning("警告", "こうかとんは爆発しました")
+            
+            return
         pg.display.update()
         clock.tick(1000)
 # 練習7
