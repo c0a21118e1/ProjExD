@@ -66,8 +66,8 @@ def main():
         vx *= yoko
         vy *= tate
         
-        
-        if pg.time.get_ticks() % 1000 == 0:
+        # 追加機能 時間がたつとボールが速くなる
+        if pg.time.get_ticks() % 1000 == 0: # 追加機能 時間がたつとボールが速くなる
             if vx < 0:
                 vx -= 1
             else:
@@ -79,7 +79,7 @@ def main():
             pg.draw.circle(bmimg_sfc, (random.randint(1, 255), random.randint(1, 255), random.randint(1, 255)), (10, 10), 10)
         if kkimg_rct.colliderect(bmimg_rct):
             
-            kkimg_sfc = pg.image.load("fig/11.png")
+            kkimg_sfc = pg.image.load("fig/11.png") # 追加機能　鶏の丸焼きを表示
             kkimg_rct = kkimg_sfc.get_rect()
             #kkimg_sfc = pg.transform.rotozoom(kkimg_sfc, 0, )
             kkimg_rct.center = kkimg_rct.centerx, kkimg_rct.centery
@@ -90,7 +90,7 @@ def main():
 
             pg.display.update()
             clock.tick(1000)
-            tkm.showwarning("警告", "こうかとんは安らかに眠りました")  # 爆弾とぶつかったらウィンドを表示
+            tkm.showwarning("警告", "こうかとんは安らかに眠りました")  # 追加機能　爆弾とぶつかったらウィンドを表示
             
             return
         pg.display.update()
