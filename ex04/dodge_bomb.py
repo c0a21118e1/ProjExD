@@ -11,8 +11,15 @@ def main():
     screen_sfc.blit(bgimg_sfc, bgimg_rct)
 
     clock.tick(0.5)
+    # 練習３
+    kkimg_sfc = pg.image.load("fig/6.png") # Surface
+    kkimg_sfc = pg.transform.rotozoom(kkimg_sfc, 0, 2.0) # Surface
+    kkimg_rct = kkimg_sfc.get_rect() # Rect
+    kkimg_rct.center = 900, 400
     while True:
         screen_sfc.blit(bgimg_sfc, bgimg_rct)
+        screen_sfc.blit(kkimg_sfc, kkimg_rct)
+
 
         # 練習２
         for event in pg.event.get():
