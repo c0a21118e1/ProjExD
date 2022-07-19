@@ -92,6 +92,38 @@ class Score: # スコアを描画する関数
         self.blit(scr)
 
 
+class Bird:
+    def __init__(self, image: str, size: float, xy):
+        self.sfc = pg.image.load(image)    # Surface
+        self.sfc = pg.transform.rotozoom(self.sfc, 0, size)  # Surface
+        self.rct = self.sfc.get_rect()          # Rect
+        self.rct.center = xy
+
+    def blit(self, scr: Screen):
+        scr.sfc.blit(self.sfc, self.rct)
+
+    def update(self, scr: Screen):
+        key_states = pg.key.get_pressed() # 辞書
+        if key_states[pg.K_UP] or key_states[pg.K_w]: 
+            self.rct.centery -= 1
+        if key_states[pg.K_DOWN] or key_states[pg.K_s]: 
+            self.rct.centery += 1
+        # if key_states[pg.K_LEFT]: 
+        #     self.rct.centerx -= 1
+        # if key_states[pg.K_RIGHT]: 
+        #     self.rct.centerx += 1
+        if check_bound(self.rct, scr.rct) != (1, 1): # 領域外だったら
+            if key_states[pg.K_UP]: 
+                self.rct.centery += 1
+            if key_states[pg.K_DOWN]: 
+                self.rct.centery -= 1
+            if key_states[pg.K_LEFT]: 
+                 self.rct.centerx += 1
+            if key_states[pg.K_RIGHT]: 
+                 self.rct.centerx -= 1
+        self.blit(scr)
+
+
 class Ball: # ボールを描画する関数
     def __init__(self, color, size, vxy, scr: Screen):
         self.sfc = pg.Surface((2*size, 2*size)) # Surface
@@ -117,6 +149,7 @@ def main():
     clock = pg.time.Clock()
     scr = Screen("ホッケーゲーム", (1600, 900))
     bkd = Ball((255,0,0), 25, (+1,+1), scr)
+    kkt = Bird("fig/6.png", 2.0, (900, 400))
     kb = Kabe((0, 0, 255), 50)
     kb2 = Kabe2((0, 255, 0), 50)
     sc = Score(0, 0)
@@ -131,9 +164,12 @@ def main():
         if bkd.rct.centerx < 25 or bkd.rct.centerx > 1600 - 25: 
             sc.update(scr, bkd.rct)
         bkd.update(scr)
+        kkt.update(scr)
         if bkd.rct.colliderect(kb.rct): # ボールと右側のプレイヤーが当たったらボールが反射する
             bkd.vx *= -1
         if bkd.rct.colliderect(kb2.rct): # ボールと左側のプレイヤーが当たったらボールが反射する
+            bkd.vx *= -1
+        if kkt.rct.colliderect(bkd.rct):
             bkd.vx *= -1
         if sc.s1 == 5 and sc.s2 < 4 or sc.s2 == 5 and sc.s1 < 4: # どちらかが5点取ったらゲーム終了
             return
