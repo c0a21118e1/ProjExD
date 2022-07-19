@@ -2,7 +2,7 @@ from tkinter import Y
 import pygame as pg
 import sys
 import random
-
+import tkinter.messagebox as tkm
 
 class Screen:
     def __init__(self, title, wh):
@@ -74,9 +74,9 @@ class Score: # スコアを描画する関数
     def __init__(self, score1, score2):
         self.s1 = score1
         self.s2 = score2
-        self.fscore1 = pg.font.Font(None, 80)
+        self.fscore1 = pg.font.Font("ex06/fig/font.ttf", 80)
         self.tscore1 = self.fscore1.render(str(self.s1), True, (255, 255, 255)) # 右側のプレイヤーのスコア
-        self.fscore2 = pg.font.Font(None, 80)
+        self.fscore2 = pg.font.Font("ex06/fig/font.ttf", 80)
         self.tscore2 = self.fscore2.render(str(self.s2), True, (255, 255, 255)) # 左側のプレイヤーのスコア
     def blit(self, scr: Screen):
         scr.sfc.blit(self.tscore1, (750, 20))
@@ -135,8 +135,18 @@ def main():
             bkd.vx *= -1
         if bkd.rct.colliderect(kb2.rct): # ボールと左側のプレイヤーが当たったらボールが反射する
             bkd.vx *= -1
-        if sc.s1 == 5 and sc.s2 < 4 or sc.s2 == 5 and sc.s1 < 4: # どちらかが5点取ったらゲーム終了
+        if sc.s1 == 5 and sc.s2 < 4: # どちらかが5点取ったらゲーム終了
+            pg.mixer.music.stop()
+            pg.mixer.music.load("ex06/fig/レベルアップ.mp3")
+            pg.mixer.music.play(1)
+            tkm.showinfo("Game Clear", "Player1 Win!!")
             return
+        elif sc.s2 == 5 and sc.s1 < 4:
+            pg.mixer.music.stop()
+            pg.mixer.music.load("ex06/fig/レベルアップ.mp3")
+            pg.mixer.music.play(1)
+            tkm.showinfo("Game Clear", "Player2 Win!!")
+            return       
         elif sc.s1 >= 4 and sc.s2 >= 4: # デュースの場合、2点差がついたらゲーム終了
             if abs(sc.s1 - sc.s2) == 2:
                 return
