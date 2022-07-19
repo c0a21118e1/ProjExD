@@ -5,7 +5,7 @@ import random
 
 def bgm():
     # 音楽ファイルの読み込み
-    pg.mixer.music.load("./fig/Floor_Beast.mp3") 
+    pg.mixer.music.load("ex06/Floor_Beast.mp3") 
     pg.mixer.music.play(loops=-1, start=0.0)#ロードした音楽の再生
 
 class Screen:
