@@ -4,6 +4,12 @@ import sys
 import random
 import tkinter.messagebox as tkm
 
+
+def bgm():
+    # 音楽ファイルの読み込み
+    pg.mixer.music.load("./fig/Floor_Beast.mp3") 
+    pg.mixer.music.play(loops=-1, start=0.0)#ロードした音楽の再生
+
 class Screen:
     def __init__(self, title, wh):
         pg.display.set_caption(title)
@@ -112,11 +118,24 @@ class Ball: # ボールを描画する関数
         self.vy *= tate   
         self.blit(scr)          
 
+class Bar:
+    def __init__(self,image:str,size:float,xy):#中央障害物画像用のSurface
+        self.sfc=pg.image.load(image)
+        self.sfc= pg.transform.rotozoom(self.sfc,0,size)
+        self.rct=self.sfc.get_rect()                   #中央障害物画像用のRect
+        self.rct.center=xy                        #中央障害物画像の中心座標を設定する
+
+    def blit(self,scr :Screen):
+        scr.sfc.blit(self.sfc, self.rct) #中央障害物画像の更新
+
+    def update(self, scr: Screen): #更新
+        self.blit(scr)
 
 def main():
     clock = pg.time.Clock()
     scr = Screen("ホッケーゲーム", (1600, 900))
-    bkd = Ball((255,0,0), 25, (+1,+1), scr)
+    bkd = Ball((255,0,0), 25, (+3,+2), scr)
+    bar = Bar("fig/line.jpg",0.225, (800, 450))
     kb = Kabe((0, 0, 255), 50)
     kb2 = Kabe2((0, 255, 0), 50)
     sc = Score(0, 0)
@@ -150,6 +169,9 @@ def main():
         elif sc.s1 >= 4 and sc.s2 >= 4: # デュースの場合、2点差がついたらゲーム終了
             if abs(sc.s1 - sc.s2) == 2:
                 return
+        if bar.rct.colliderect(kb.rct): #衝突処理
+            kb*=-1
+        bar.update(scr)
                 
         pg.display.update()
         clock.tick(1000)
@@ -165,6 +187,7 @@ def check_bound(rct, scr_rct):
 
 if __name__ == "__main__":
     pg.init()
+    bgm()
     main()
     pg.quit()
     sys.exit()
