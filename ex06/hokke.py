@@ -49,19 +49,7 @@ class Kabe: # 右側のプレイヤーを作成する関数
             if key_states[pg.K_s]: 
                 self.rct.centery -= 1
         self.blit(scr)
-
-
-class Kabe2: # 左側のプレイヤーを作成する関数
-    def __init__(self ,image,size,xy):  
-        self.sfc=pg.image.load(image)#画像を取得
-        self.sfc=pg.transform.rotozoom(self.sfc, 0, size)#1/4倍にズーム
-        self.rct=self.sfc.get_rect()
-        self.rct.center=xy #位置を設定
-        
-    def blit(self, scr: Screen):
-        scr.sfc.blit(self.sfc, self.rct)
-    
-    def update(self, scr: Screen):
+    def update2(self, scr: Screen):
         key_states = pg.key.get_pressed() # 辞書
         if key_states[pg.K_UP]: # 上キーを押すと上に移動
             self.rct.centery -= 1
@@ -73,6 +61,29 @@ class Kabe2: # 左側のプレイヤーを作成する関数
             if key_states[pg.K_DOWN]: 
                 self.rct.centery -= 1
         self.blit(scr)
+
+# class Kabe2: # 左側のプレイヤーを作成する関数
+#     def __init__(self ,image,size,xy):  
+#         self.sfc=pg.image.load(image)#画像を取得
+#         self.sfc=pg.transform.rotozoom(self.sfc, 0, size)#1/4倍にズーム
+#         self.rct=self.sfc.get_rect()
+#         self.rct.center=xy #位置を設定
+        
+#     def blit(self, scr: Screen):
+#         scr.sfc.blit(self.sfc, self.rct)
+    
+#     def update(self, scr: Screen):
+#         key_states = pg.key.get_pressed() # 辞書
+#         if key_states[pg.K_UP]: # 上キーを押すと上に移動
+#             self.rct.centery -= 1
+#         if key_states[pg.K_DOWN]: # 下キーを押すと下に移動
+#             self.rct.centery += 1
+#         if check_bound(self.rct, scr.rct) != (1, 1): # 領域外だったら
+#             if key_states[pg.K_UP]:  
+#                 self.rct.centery += 1
+#             if key_states[pg.K_DOWN]: 
+#                 self.rct.centery -= 1
+#         self.blit(scr)
 
 
 class Score: # スコアを描画する関数
@@ -180,7 +191,7 @@ def main():
     scr = Screen("ホッケーゲーム", (1600, 900))
     bkd = Ball("fig/ball.png", (+3,+3), scr)
     kb = Kabe("fig/line1.png",0.75,(50,450))
-    kb2 = Kabe2("fig/line2.png",0.75,(1550,450))
+    kb2 = Kabe("fig/line2.png",0.75,(1550,450))
     
     #障害物 荒井担当分
     obs=[]
@@ -195,7 +206,7 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT: return
         kb.update(scr)
-        kb2.update(scr)
+        kb2.update2(scr)
         if pg.time.get_ticks() % 1000 == 0: # 追加機能 時間がたつとボールが速くなる　新山担当分
             if bkd.vx < 0:
                 bkd.vx -= 0.4
@@ -210,8 +221,12 @@ def main():
         kkt.update(scr)
         if bkd.rct.colliderect(kb.rct): # ボールと右側のプレイヤーが当たったらボールが反射する
             bkd.vx *= -1
+            bkd.rct.centerx += 1
+            
         if bkd.rct.colliderect(kb2.rct): # ボールと左側のプレイヤーが当たったらボールが反射する
             bkd.vx *= -1
+            bkd.rct.centerx -= 1
+            
         if count1 == 5 and count2 < 4 or count2 == 5 and count1 < 4: # どちらかが5点取ったらゲーム終了
             Word("ゲームセット","お疲れ様")#ゲームセット文の表示 #荒井担当分
             return
@@ -223,6 +238,8 @@ def main():
             i.blit(scr)
             if i.rct.colliderect(bkd.rct):
                 bkd.vx*=-1
+                bkd.rct.centerx += bkd.vx
+
 #得点表示　#荒井担当分
         font = pg.font.Font(None,100)
         text = font.render(f"{count2}:{count1}", True, (255,255,255))#得点を表示
