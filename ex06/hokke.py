@@ -7,9 +7,10 @@ import tkinter.messagebox as tkm #荒井担当分
 
 count1,count2=0,0 #荒井担当分
 
-def bgm(): #林担当分
+#林担当
+def bgm():
     # 音楽ファイルの読み込み
-    pg.mixer.music.load("fig/Floor_Beast.mp3") 
+    pg.mixer.music.load("ex06/Floor_Beast.mp3") 
     pg.mixer.music.play(loops=-1, start=0.0)#ロードした音楽の再生
 
 class Screen:
@@ -97,6 +98,7 @@ class Score: # スコアを描画する関数
 
 
 class Bird: #本田担当分 障害物として存在するこうかとん
+
     def __init__(self, image: str, size: float, xy):
         self.sfc = pg.image.load(image)    # Surface
         self.sfc = pg.transform.rotozoom(self.sfc, 0, size)  # Surface
@@ -170,18 +172,8 @@ class Word: #荒井担当分
     def __init__(self ,title, text):
         tkm.showwarning(title,text)#終了時のテキストを表示
 
-class Bar: #林担当分
-    def __init__(self,image:str,size:float,xy):#中央障害物画像用のSurface
-        self.sfc=pg.image.load(image)
-        self.sfc= pg.transform.rotozoom(self.sfc,0,size)
-        self.rct=self.sfc.get_rect()                   #中央障害物画像用のRect
-        self.rct.center=xy                        #中央障害物画像の中心座標を設定する
 
-    def blit(self,scr :Screen):
-        scr.sfc.blit(self.sfc, self.rct) #中央障害物画像の更新
 
-    def update(self, scr: Screen): #更新
-        self.blit(scr)
 
 def main():
     clock = pg.time.Clock()
@@ -194,8 +186,8 @@ def main():
     obs=[]
     for i in range(3): #障害物を３つ生成（荒井）
         obs.append(Obstacle("fig/障害物.png"))
+
     kkt = Bird("fig/6.png", 2.0, (900, 400))
-    # bar = Bar("fig/line.jpg",0.225, (800, 450)) #林担当分
     sc = Score(0, 0)
 
     while True:
@@ -213,6 +205,7 @@ def main():
                 bkd.vy -= 0.4
             else:
                 bkd.vy += 0.4
+
         bkd.update(scr)
         kkt.update(scr)
         if bkd.rct.colliderect(kb.rct): # ボールと右側のプレイヤーが当たったらボールが反射する
@@ -237,9 +230,10 @@ def main():
         if kkt.rct.colliderect(bkd.rct):
             bkd.vx *= -1
         # 中野担当分
+
         if sc.s1 == 5 and sc.s2 < 4: # どちらかが5点取ったらゲーム終了
-            pg.mixer.music.stop() # BGMがとまる
-            pg.mixer.music.load("ex06/fig/レベルアップ.mp3") # 効果音が鳴る
+            pg.mixer.music.stop()
+            pg.mixer.music.load("ex06/fig/レベルアップ.mp3")
             pg.mixer.music.play(1)
             tkm.showinfo("Game Clear", "Player1 Win!!")
             return
@@ -252,7 +246,6 @@ def main():
         elif sc.s1 >= 4 and sc.s2 >= 4: # デュースの場合、2点差がついたらゲーム終了
             if abs(sc.s1 - sc.s2) == 2:
                 return
-
                 
         pg.display.update()
         clock.tick(1000)
