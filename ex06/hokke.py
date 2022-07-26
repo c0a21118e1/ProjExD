@@ -7,6 +7,11 @@ import tkinter.messagebox as tkm #荒井担当分
 
 count1,count2=0,0 #荒井担当分
 
+def bgm():
+    # 音楽ファイルの読み込み
+    pg.mixer.music.load("ex06/Floor_Beast.mp3") 
+    pg.mixer.music.play(loops=-1, start=0.0)#ロードした音楽の再生
+
 class Screen:
     def __init__(self, title, wh):
         pg.display.set_caption(title)
@@ -68,6 +73,61 @@ class Kabe2: # 左側のプレイヤーを作成する関数
                 self.rct.centery -= 1
         self.blit(scr)
 
+
+class Score: # スコアを描画する関数
+    def __init__(self, score1, score2):
+        self.s1 = score1
+        self.s2 = score2
+        self.fscore1 = pg.font.Font("ex06/fig/font.ttf", 80)
+        self.tscore1 = self.fscore1.render(str(self.s1), True, (255, 255, 255)) # 右側のプレイヤーのスコア
+        self.fscore2 = pg.font.Font("ex06/fig/font.ttf", 80)
+        self.tscore2 = self.fscore2.render(str(self.s2), True, (255, 255, 255)) # 左側のプレイヤーのスコア
+    def blit(self, scr: Screen):
+        scr.sfc.blit(self.tscore1, (750, 20))
+        scr.sfc.blit(self.tscore2, (850, 20))
+
+    def update(self, scr: Screen, bk):
+        if bk.centerx > 800: # 左側のプレイヤーの点数を更新
+            self.s1 += 1
+        else: # 右側のプレイヤーの点数を更新
+            self.s2 += 1
+        self.tscore1 = self.fscore1.render(str(self.s1), True, (255, 255, 255))
+        self.tscore2 = self.fscore2.render(str(self.s2), True, (255, 255, 255))
+        self.blit(scr)
+
+
+class Bird:
+    def __init__(self, image: str, size: float, xy):
+        self.sfc = pg.image.load(image)    # Surface
+        self.sfc = pg.transform.rotozoom(self.sfc, 0, size)  # Surface
+        self.rct = self.sfc.get_rect()          # Rect
+        self.rct.center = xy
+
+    def blit(self, scr: Screen):
+        scr.sfc.blit(self.sfc, self.rct)
+
+    def update(self, scr: Screen):
+        key_states = pg.key.get_pressed() # 辞書
+        if key_states[pg.K_UP] or key_states[pg.K_w]: 
+            self.rct.centery -= 1
+        if key_states[pg.K_DOWN] or key_states[pg.K_s]: 
+            self.rct.centery += 1
+        # if key_states[pg.K_LEFT]: 
+        #     self.rct.centerx -= 1
+        # if key_states[pg.K_RIGHT]: 
+        #     self.rct.centerx += 1
+        if check_bound(self.rct, scr.rct) != (1, 1): # 領域外だったら
+            if key_states[pg.K_UP]: 
+                self.rct.centery += 1
+            if key_states[pg.K_DOWN]: 
+                self.rct.centery -= 1
+            if key_states[pg.K_LEFT]: 
+                 self.rct.centerx += 1
+            if key_states[pg.K_RIGHT]: 
+                 self.rct.centerx -= 1
+        self.blit(scr)
+
+
 class Ball: # ボールを描画する関数
     def __init__(self, image, vxy, scr: Screen):
         self.sfc = pg.image.load(image) # Surface
@@ -110,6 +170,18 @@ class Word: #荒井担当分
     def __init__(self ,title, text):
         tkm.showwarning(title,text)#終了時のテキストを表示
 
+class Bar:
+    def __init__(self,image:str,size:float,xy):#中央障害物画像用のSurface
+        self.sfc=pg.image.load(image)
+        self.sfc= pg.transform.rotozoom(self.sfc,0,size)
+        self.rct=self.sfc.get_rect()                   #中央障害物画像用のRect
+        self.rct.center=xy                        #中央障害物画像の中心座標を設定する
+
+    def blit(self,scr :Screen):
+        scr.sfc.blit(self.sfc, self.rct) #中央障害物画像の更新
+
+    def update(self, scr: Screen): #更新
+        self.blit(scr)
 
 def main():
     clock = pg.time.Clock()
@@ -122,6 +194,13 @@ def main():
     obs=[]
     for i in range(3): #障害物を３つ生成（荒井）
         obs.append(Obstacle("fig/障害物.png"))
+    bkd = Ball((255,0,0), 25, (+1,+1), scr)
+    kkt = Bird("fig/6.png", 2.0, (900, 400))
+    bkd = Ball((255,0,0), 25, (+3,+2), scr)
+    bar = Bar("fig/line.jpg",0.225, (800, 450))
+    kb = Kabe((0, 0, 255), 50)
+    kb2 = Kabe2((0, 255, 0), 50)
+    sc = Score(0, 0)
 
     while True:
         scr.blit()
@@ -130,6 +209,7 @@ def main():
         kb.update(scr)
         kb2.update(scr)
         bkd.update(scr)
+        kkt.update(scr)
         if bkd.rct.colliderect(kb.rct): # ボールと右側のプレイヤーが当たったらボールが反射する
             bkd.vx *= -1
         if bkd.rct.colliderect(kb2.rct): # ボールと左側のプレイヤーが当たったらボールが反射する
@@ -149,6 +229,27 @@ def main():
         font = pg.font.Font(None,100)
         text = font.render(f"{count2}:{count1}", True, (255,255,255))#得点を表示
         scr.sfc.blit(text, [750, 50])#得点を表示
+        if kkt.rct.colliderect(bkd.rct):
+            bkd.vx *= -1
+        if sc.s1 == 5 and sc.s2 < 4 or sc.s2 == 5 and sc.s1 < 4: # どちらかが5点取ったらゲーム終了
+        if sc.s1 == 5 and sc.s2 < 4: # どちらかが5点取ったらゲーム終了
+            pg.mixer.music.stop()
+            pg.mixer.music.load("ex06/fig/レベルアップ.mp3")
+            pg.mixer.music.play(1)
+            tkm.showinfo("Game Clear", "Player1 Win!!")
+            return
+        elif sc.s2 == 5 and sc.s1 < 4:
+            pg.mixer.music.stop()
+            pg.mixer.music.load("ex06/fig/レベルアップ.mp3")
+            pg.mixer.music.play(1)
+            tkm.showinfo("Game Clear", "Player2 Win!!")
+            return       
+        elif sc.s1 >= 4 and sc.s2 >= 4: # デュースの場合、2点差がついたらゲーム終了
+            if abs(sc.s1 - sc.s2) == 2:
+                return
+        if bar.rct.colliderect(kb.rct): #衝突処理
+            kb*=-1
+        bar.update(scr)
                 
         pg.display.update()
         clock.tick(1000)
@@ -169,6 +270,7 @@ def check_bound(rct, scr_rct):
 
 if __name__ == "__main__":
     pg.init()
+    bgm()
     main()
     pg.quit()
     sys.exit()
